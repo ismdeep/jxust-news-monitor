@@ -6,6 +6,9 @@ from news_list_db import NewsListDB
 import urllib3
 import time
 
+import sys
+import os
+
 MONITOR_INTERVAL_TIME = 10 * 60  # 10 minutes
 
 
@@ -20,7 +23,17 @@ def monitor(__url__, __tag__):
             NewsListDB.add(news.url)
 
 
+def show_help():
+    print("Usage: python3 main.py WORK_DIR")
+
+
 def main():
+    if len(sys.argv) <= 1:
+        show_help()
+        exit(-1)
+    work_dir = sys.argv[1]
+    os.chdir(work_dir)
+
     # 0. 启动时对文件加锁
     lock_file = open('monitor.lock', 'w')
     try:
