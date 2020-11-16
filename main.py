@@ -1,5 +1,7 @@
 import fcntl
+import json
 
+from monitor_util.monitor_util import MonitorUtil
 from news_list_utils import get_news_list
 from telegram_msg_sender import TelegramMsgSender
 from news_list_db import NewsListDB
@@ -44,11 +46,20 @@ def main():
         return
     else:
         print('Monitor lock file LOCKED')
+
     # 1. Init telegram bot
     TelegramMsgSender.init_with_config('telegram_bot.json')
-    # 2. Init NewsListDB
+
+    # 2. Init Monitor Util
+    monitor_json = json.load(open('monitor.json', 'r'))
+    monitor_util = MonitorUtil()
+    monitor_util.set_url(monitor_json['url'])
+    monitor_util.set_token(monitor_json['token'])
+
+    # 3. Init NewsListDB
     NewsListDB.load()
-    # 3. Start Monitor
+
+    # 4. Start Monitor
     urllib3.disable_warnings()
     try:
         while True:
@@ -56,12 +67,14 @@ def main():
             monitor(__url__='/index/xxgg.htm', __tag__='学校公告')
             monitor(__url__='/index/xycz.htm', __tag__='校园传真')
             monitor(__url__='/index/xshd.htm', __tag__='学术活动')
+            MonitorUtil.update_status('jxust-news-monitor', 'true')
             time.sleep(MONITOR_INTERVAL_TIME)
     except KeyboardInterrupt:
         print('-' * 20)
     finally:
         fcntl.flock(lock_file, fcntl.LOCK_UN)
-    # 4. 退出前保存数据
+
+    # 5. 退出前保存数据
     NewsListDB.save()
 
 
