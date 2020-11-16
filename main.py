@@ -24,6 +24,7 @@ def monitor(__url__, __tag__):
                 no_webpage=False
             )
             NewsListDB.add(news.url)
+            NewsListDB.save()
 
 
 def show_help():
