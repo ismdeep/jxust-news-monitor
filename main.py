@@ -8,6 +8,7 @@ from news_list_db import NewsListDB
 import urllib3
 import time
 
+import asyncio
 import sys
 import os
 
@@ -52,7 +53,7 @@ def main():
 
     # 2. Init Monitor Util
     MonitorUtil.init_with_json_config('monitor.json')
-    
+
     # 3. Init NewsListDB
     NewsListDB.load()
 
@@ -64,7 +65,7 @@ def main():
             monitor(__url__='/index/xxgg.htm', __tag__='学校公告')
             monitor(__url__='/index/xycz.htm', __tag__='校园传真')
             monitor(__url__='/index/xshd.htm', __tag__='学术活动')
-            MonitorUtil.update_status('jxust-news-monitor', 'true')
+            asyncio.run(MonitorUtil.update_status('jxust-news-monitor', 'true'))
             time.sleep(MONITOR_INTERVAL_TIME)
     except KeyboardInterrupt:
         print('-' * 20)
