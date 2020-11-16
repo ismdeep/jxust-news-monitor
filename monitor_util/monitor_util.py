@@ -1,5 +1,6 @@
 import requests
 import logging
+import json
 
 
 class MonitorUtil(object):
@@ -12,11 +13,12 @@ class MonitorUtil(object):
             cls._instance = orig.__new__(cls)
         return cls._instance
 
-    def set_url(self, __url__):
-        self.url = __url__
-
-    def set_token(self, __token__):
-        self.token = __token__
+    @staticmethod
+    def init_with_json_config(__config_file_path__):
+        monitor_json = json.load(open(__config_file_path__, 'r'))
+        monitor_util = MonitorUtil()
+        monitor_util.url = monitor_json['url']
+        monitor_util.token = monitor_json['token']
 
     @staticmethod
     async def update_status(key_name, value):

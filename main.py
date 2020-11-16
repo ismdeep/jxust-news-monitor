@@ -51,11 +51,8 @@ def main():
     TelegramMsgSender.init_with_config('telegram_bot.json')
 
     # 2. Init Monitor Util
-    monitor_json = json.load(open('monitor.json', 'r'))
-    monitor_util = MonitorUtil()
-    monitor_util.set_url(monitor_json['url'])
-    monitor_util.set_token(monitor_json['token'])
-
+    MonitorUtil.init_with_json_config('monitor.json')
+    
     # 3. Init NewsListDB
     NewsListDB.load()
 
